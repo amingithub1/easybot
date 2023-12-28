@@ -2,7 +2,6 @@ require('dotenv').config()
 
 const { Telegraf } = require('telegraf');
 const sdk = require("node-appwrite");
-
 const client = new sdk.Client();
 
 client
