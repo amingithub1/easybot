@@ -8,6 +8,11 @@ bot.command('start', async (ctx) => {
         .catch(err => console.log(err.message))
 })
 
+bot.command('yes', async (ctx) => {
+    ctx.telegram.sendMessage(ctx.message.chat.id, "YEEEESSSSSS")
+        .then(message => console.log(message.message_id))
+        .catch(err => console.log(err.message))
+})
 
 bot.command('ok', async (ctx) => {
     ctx.telegram.sendMessage(
