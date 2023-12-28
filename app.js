@@ -1,59 +1,32 @@
 require('dotenv').config()
-const {Telegraf, Markup} = require('telegraf')
-const bot = new Telegraf(process.env.BOT_TOKEN)
 
-bot.command('start', async (ctx) => {
-    ctx.telegram.sendMessage(ctx.message.chat.id, "hi")
-        .then(message => console.log(message.message_id))
-        .catch(err => console.log(err.message))
-})
+const appwrite = require('appwrite');
+const { Telegraf } = require('telegraf');
 
-bot.command('yes', async (ctx) => {
-    ctx.telegram.sendMessage(ctx.message.chat.id, "YEEEESSSSSS")
-        .then(message => console.log(message.message_id))
-        .catch(err => console.log(err.message))
-})
+const client = new appwrite.Client();
+client
+  .setEndpoint('https://cloud.appwrite.io/v1')
+  .setProject(process.env.YOUR_APPWRITE_PROJECT_ID) // Replace with your Appwrite project ID
+  .setKey(process.env.YOUR_APPWRITE_API_KEY); // Replace with your Appwrite API key
 
-bot.command('ok', async (ctx) => {
-    ctx.telegram.sendMessage(
-        ctx.message.chat.id,
-        "OK 2",
-        Markup
-        .keyboard(['/simple', '/inline', '/pyramid'])
-        .oneTime()
-        .resize()
-        )
-        .then(message => console.log(message.message_id))
-        .catch(err => console.log(err.message))
-})
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
-bot.command(["simple", "inline", "pyramid"], ctx => {
-    ctx.reply("Command")
-})
-bot.launch()
+bot.start((ctx) => ctx.reply('Welcome to your Telegram bot!'));
 
-const http = require('http');
+bot.command('hello', (ctx) => ctx.reply('Hello!'));
 
-const server = http.createServer((req, res) => {
-  // Check if the request URL is "/"
-  if (req.url === '/') {
-    // Set the response header
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
+bot.on('text', async (ctx) => {
+  const message = ctx.message.text;
 
-    // Send the "Hello, World!" response
-    res.end('Hello, World!\n');
-  } else {
-    // For other URLs, send a 404 Not Found response
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('404 Not Found\n');
-  }
+  // Example: Save the received message to Appwrite collection
+  await client
+    .database.createDocument('collections_id', { message })
+    .then(() => console.log('Message saved to Appwrite'));
+
+  // Example: Echo the received message
+  ctx.reply(`You said: ${message}`);
 });
 
-// Set the port number for the server to listen on
-const port = 3000;
+bot.launch();
 
-// Start the server and listen on the specified port
-server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
-});
 
