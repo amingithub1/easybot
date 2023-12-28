@@ -14,7 +14,7 @@
   "dependencies": {
     "dotenv": "^16.3.1",
     "nodemon": "^3.0.1",
-    "appwrite": "^13.0.1",
+    "node-appwrite": "^11.1.0",
     "telegraf": "^4.14.0"
   }
 }
