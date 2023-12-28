@@ -27,4 +27,28 @@ bot.command(["simple", "inline", "pyramid"], ctx => {
 })
 bot.launch()
 
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  // Check if the request URL is "/"
+  if (req.url === '/') {
+    // Set the response header
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+
+    // Send the "Hello, World!" response
+    res.end('Hello, World!\n');
+  } else {
+    // For other URLs, send a 404 Not Found response
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('404 Not Found\n');
+  }
+});
+
+// Set the port number for the server to listen on
+const port = 3000;
+
+// Start the server and listen on the specified port
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
+});
 
